@@ -1,0 +1,32 @@
+{
+  "name": "ascii-rendering",
+  "version": "1.0.0",
+  "description": "Ascii rendering",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx webpack-dev-server",
+    "build": "npx webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vanflux/ascii-rendering.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vanflux/ascii-rendering/issues"
+  },
+  "homepage": "https://github.com/vanflux/ascii-rendering#readme",
+  "dependencies": {
+    "copy-webpack-plugin": "^13.0.0",
+    "fork-ts-checker-webpack-plugin": "^9.1.0",
+    "html-webpack-plugin": "^5.6.3",
+    "mini-css-extract-plugin": "^2.9.2",
+    "rand-seed": "^2.1.7",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.1"
+  }
+}

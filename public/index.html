@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ASCII Rendering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #111111;
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1rem 2rem;
+      background-color: #111;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    header a {
+      color: #0085fd;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      padding: 0rem 0.5rem;
+    }
+
+    .demo {
+      position: relative;
+      left: 4px;
+      top: 4px;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1200/700;
+      border: 2px solid #333;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .demo > div {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+    }
+
+    .demo > canvas {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ASCII Rendering</h1>
+    <a href="https://github.com/vanflux" target="_blank">@vanflux</a>
+  </header>
+  <main>
+    <div class="content">
+      <div class="demo">
+        <div>
+          <select id="select">
+            <option value="xmas-tree">Xmas tree</option>
+            <option value="bomb">Bomb</option>
+          </select>
+        </div>
+        <canvas id="canvas"></canvas>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
