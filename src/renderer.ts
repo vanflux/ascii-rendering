@@ -1,9 +1,19 @@
 
+interface Command {
+  x: number;
+  y: number;
+  char: string;
+  color: string;
+  fontSize: number;
+}
+
 export class Renderer {
   private occupied = new Array(Math.floor(this.height)).fill(0).map(() => new Array(Math.floor(this.width)).fill(0));
-  private _fontSize = 16;
+  public fontSize = 16;
   public fillColor = '#ffffff';
   public strokeColor = '#ffffff';
+  public charShader?: (command: Command) => void;
+  private commandQueue: Command[] = [];
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
@@ -16,15 +26,6 @@ export class Renderer {
 
   get height() {
     return this.canvas.height;
-  }
-
-  get fontSize() {
-    return this._fontSize;
-  }
-
-  set fontSize(value: number) {
-    this.ctx.font = `${value}px Arial`;
-    this._fontSize = value;
   }
 
   clear() {
@@ -41,13 +42,12 @@ export class Renderer {
     const occupiedY = Math.floor(y / this.height * this.occupied.length);
     const v = this.occupied[occupiedY]?.[occupiedX] ?? 0;
     const intensity = Math.max(0, 1 - v * 0.7);
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
-    this.ctx.fillStyle = `${this.fillColor}${(Math.floor(intensity * 255)).toString(16).padStart(2, '0')}`;
-    this.ctx.fillText(char, x, y);
+    const color = `${this.fillColor}${(Math.floor(intensity * 255)).toString(16).padStart(2, '0')}`;
+    this.commandQueue.push({ x, y, char, color, fontSize: this.fontSize })
     const c = 0.8;
-    for (let dy = - Math.floor(this.fontSize * c); dy < this.fontSize * c; dy++) {
-      for (let dx = - Math.floor(this.fontSize * c); dx < this.fontSize * c; dx++) {
+    const size = Math.ceil(this.fontSize * c);
+    for (let dy = - size; dy < size; dy++) {
+      for (let dx = - size; dx < size; dx++) {
         const rx = occupiedX + dx;
         const ry = occupiedY + dy;
         if (ry < 0 || ry >= this.occupied.length) continue;
@@ -120,5 +120,17 @@ export class Renderer {
     for (let i = 0; i < chars.length; i++) {
       this.char(x + i * this.fontSize * 0.8, y, chars[i]);
     }
+  }
+
+  render() {
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    for (const command of this.commandQueue) {
+      this.charShader?.(command);
+      this.ctx.fillStyle = command.color;
+      this.ctx.font = `${command.fontSize}px Arial`;
+      this.ctx.fillText(command.char, command.x, command.y);
+    }
+    this.commandQueue.length = 0;
   }
 }

@@ -1,9 +1,11 @@
 import { Scene } from "./scene";
+import { Transform } from "./transform";
 
 export abstract class Entity {
   protected _scene?: Scene;
   protected _parent?: Entity;
-  public childs: Entity[] = [];
+  public readonly transform = new Transform();
+  public readonly childs: Entity[] = [];
 
   get scene() {
     if (!this._scene) throw new Error('Entity outside scene!');

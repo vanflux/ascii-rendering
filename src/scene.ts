@@ -7,7 +7,13 @@ export class Scene {
   public deltaTime = 0;
   private root = new Root(this);
 
-  constructor(public renderer: Renderer) {}
+  constructor(public renderer: Renderer) {
+    renderer.charShader = (command) => {
+      const v = Math.cos(command.y * 0.01 + this.time * 0.004) * Math.max(0, renderer.height - command.y - 100) * 0.04;
+      command.x += v;
+      command.y += Math.cos(v * 0.1) * 10;
+    };
+  }
 
   add(ent: Entity) {
     this.root.add(ent);
@@ -29,5 +35,6 @@ export class Scene {
 
   render() {
     this.root.render();
+    this.renderer.render();
   }
 }
