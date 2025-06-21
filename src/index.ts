@@ -1,8 +1,7 @@
-import { Bomb } from "./bomb";
-import { Entity } from "./entity";
 import { Renderer } from "./renderer";
 import { Scene } from "./scene";
-import { XmasTree } from "./xmas-tree";
+import { BombScene } from "./scenes/bomb/scene";
+import { XmasTreeScene } from "./scenes/xmas-tree/scene";
 
 export function main() {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -12,9 +11,9 @@ export function main() {
   const renderer = new Renderer(canvas, ctx);
   const scene = new Scene(renderer);
 
-  let time = Date.now();
+  let time = Date.now() / 1000;
   function tick() {
-    const deltaTime = Date.now() - time;
+    const deltaTime = Date.now() / 1000 - time;
     time += deltaTime;
     renderer.clear();
     scene.update(deltaTime);
@@ -27,10 +26,10 @@ export function main() {
     scene.clear();
     switch (selectElem.value) {
       case 'xmas-tree':
-        scene.add(new XmasTree());
+        scene.add(new XmasTreeScene());
         break;
       case 'bomb':
-        scene.add(new Bomb());
+        scene.add(new BombScene());
         break;
     }
   };

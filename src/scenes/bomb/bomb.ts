@@ -1,9 +1,9 @@
-import { Mat4x4 } from "./utils/mat4x4";
-import { Renderer } from "./renderer";
-import { multiplyMatrixVector } from "./utils/multiply-matrix-vector";
-import { TextUtils } from "./utils/text-utils";
-import { Vec3 } from "./utils/vec3";
-import { Entity } from "./entity";
+import { Mat4x4 } from "../../utils/mat4x4";
+import { Renderer } from "../../renderer";
+import { multiplyMatrixVector } from "../../utils/multiply-matrix-vector";
+import { TextUtils } from "../../utils/text-utils";
+import { Vec3 } from "../../utils/vec3";
+import { Entity } from "../../entity";
 
 export class Bomb extends Entity {
   private bombHorizontalLines = 16;
@@ -15,46 +15,6 @@ export class Bomb extends Entity {
   }
 
   render() {
-    const near = 0.1;
-    const far = 1000;
-    const fov = 90;
-    const aspectRatio = this.renderer.height / this.renderer.width;
-    const fovRad = 1 / Math.tan(fov * 0.5 / 180 * Math.PI);
-
-    const matProj = new Mat4x4();
-    matProj.m[0][0] = aspectRatio * fovRad;
-    matProj.m[1][1] = fovRad;
-    matProj.m[2][2] = far / (far - near);
-    matProj.m[3][2] = (-far * near) / (far - near);
-    matProj.m[2][3] = 1;
-    matProj.m[3][3] = 0;
-
-    const theta = this.scene.time * 0.002;
-
-    const matRotZ =new Mat4x4();
-    const matRotY =new Mat4x4();
-    const matRotX =new Mat4x4();
-    matRotZ.m[0][0] = Math.cos(theta);
-    matRotZ.m[0][1] = Math.sin(theta);
-    matRotZ.m[1][0] = -Math.sin(theta);
-    matRotZ.m[1][1] = Math.cos(theta);
-    matRotZ.m[2][2] = 1;
-    matRotZ.m[3][3] = 1;
-    
-    matRotX.m[0][0] = 1;
-    matRotX.m[1][1] = Math.cos(theta * 0.5);
-    matRotX.m[1][2] = Math.sin(theta * 0.5);
-    matRotX.m[2][1] = -Math.sin(theta * 0.5);
-    matRotX.m[2][2] = Math.cos(theta * 0.5);
-    matRotX.m[3][3] = 1;
-
-    matRotY.m[0][0] = Math.cos(theta * 0.5);
-    matRotY.m[0][2] = Math.sin(theta * 0.5);
-    matRotY.m[1][1] = 1;
-    matRotY.m[2][0] = -Math.sin(theta * 0.5);
-    matRotY.m[2][2] = Math.cos(theta * 0.5);
-    matRotY.m[3][3] = 1;
-
     const lines: [Vec3, Vec3, string, string, 'stretch' | 'spaced'][] = [];
     for (let i = 0; i < this.bombHorizontalLines; i++) {
       const newLines: [Vec3, Vec3, string, string, 'stretch' | 'spaced'][] = [
@@ -78,15 +38,9 @@ export class Bomb extends Entity {
         if (i == Math.floor(this.bombHorizontalLines / 2) && (j == 3 || j == 4 || j == 5)) {
           line = [new Vec3(0.8, 0.7, 0), new Vec3(1.9, 0.6, 0), '!!BOMB!!', '#ff0000', 'stretch'];
         }
-        const matRotX = new Mat4x4();
-        matRotX.m[0][0] = 1;
-        matRotX.m[1][1] = Math.cos(theta);
-        matRotX.m[1][2] = Math.sin(theta);
-        matRotX.m[2][1] = -Math.sin(theta);
-        matRotX.m[2][2] = Math.cos(theta);
-        matRotX.m[3][3] = 1;
-        const v1 = multiplyMatrixVector(line[0], matRotX);
-        const v2 = multiplyMatrixVector(line[1], matRotX);
+        const matRotX = Mat4x4.createRotationX(theta);
+        const v1 = matRotX.mulVec(line[0]);
+        const v2 = matRotX.mulVec(line[1])
         lines.push([v1, v2, line[2], line[3], line[4]]);
       }
     }
@@ -103,43 +57,33 @@ export class Bomb extends Entity {
     }
 
     this.renderer.fontSize = 24;
-    const position = new Vec3(0, 0, 4);
     for (const line of lines) {
-      let v1 = line[0];
-      let v2 = line[1];
-      v1 = v1.add(-2, 0, 0);
-      v2 = v2.add(-2, 0, 0);
-      v1 = multiplyMatrixVector(v1, matRotZ);
-      v2 = multiplyMatrixVector(v2, matRotZ);
-      v1 = multiplyMatrixVector(v1, matRotX);
-      v2 = multiplyMatrixVector(v2, matRotX);
-      v1 = v1.addVec(position);
-      v2 = v2.addVec(position);
-      line[0] = v1;
-      line[1] = v2;
+      line[0] = line[0].add(-2, 0, 0);
+      line[1] = line[1].add(-2, 0, 0);
     }
+
     lines.sort((a, b) => a[0].z - b[0].z);
     for (const line of lines) {
-      // if ((line[0].z + line[1].z) / 2 > 3.8) continue;
-      const v1 = multiplyMatrixVector(line[0], matProj);
-      const v2 = multiplyMatrixVector(line[1], matProj);
-      v1.x += 1;
-      v1.y += 1;
-      v2.x += 1;
-      v2.y += 1;
-      v1.x *= 0.5 * this.renderer.width;
-      v1.y *= 0.5 * this.renderer.height;
-      v2.x *= 0.5 * this.renderer.width;
-      v2.y *= 0.5 * this.renderer.height;
+      let w1 = this.scene.modelMatrix.mulVec(line[0]);
+      let w2 = this.scene.modelMatrix.mulVec(line[1]);
+      let s1 = this.scene.projectionMatrix.mulVec(w1);
+      let s2 = this.scene.projectionMatrix.mulVec(w2);
+      s1 = s1.divScalar(s1.w).add(1, 1, 0).mul(0.5 * this.renderer.width, 0.5 * this.renderer.height, 1);
+      s2 = s2.divScalar(s2.w).add(1, 1, 0).mul(0.5 * this.renderer.width, 0.5 * this.renderer.height, 1);
       
       this.renderer.fillColor = line[3];
       this.renderer.strokeColor = line[3];
       if (line[4] === 'spaced') {
-        this.renderer.lineSpacedText(v1.x, v1.y, v2.x, v2.y, line[2], 24);
+        this.renderer.lineSpacedText(s1.x, s1.y, s2.x, s2.y, line[2], 24, w1.z);
       } else {
-        this.renderer.lineStretchText(v1.x, v1.y, v2.x, v2.y, line[2]);
+        this.renderer.lineStretchText(s1.x, s1.y, s2.x, s2.y, line[2], w1.z);
       }
-      // renderer.line(v1.x, v1.y, v2.x, v2.y);
     }
+  }
+
+  update() {
+    this.rotation.x = Math.cos(this.scene.time * 0.5) * 2;
+    this.rotation.y = this.scene.time * 1.1;
+    this.rotation.z = Math.cos(this.scene.time * 0.5) * 0.1;
   }
 }
