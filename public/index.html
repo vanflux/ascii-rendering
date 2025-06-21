@@ -79,6 +79,27 @@
       height: 100%;
     }
 
+    .buttons {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .buttons a {
+      background-color: #0085fd;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .buttons a:hover {
+      background-color: #006dcc;
+    }
+
     footer {
       text-align: center;
       padding: 1rem;
@@ -103,6 +124,10 @@
           </select>
         </div>
         <canvas id="canvas"></canvas>
+      </div>
+      <div class="buttons">
+        <a href="https://github.com/vanflux/ascii-rendering" target="_blank">View Repository</a>
+        <a href="https://github.com/vanflux" target="_blank">More Projects</a>
       </div>
     </div>
   </main>
