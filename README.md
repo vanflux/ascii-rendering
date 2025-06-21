@@ -3,6 +3,8 @@
 
 A fun project that renders animated 3D-inspired ASCII art scenes directly in the browser.
 
+🔗 Live Demo: [vanflux.github.io/ascii-rendering](https://vanflux.github.io/ascii-rendering/)
+
 ---
 
 ## 🎮 Scenes Available
