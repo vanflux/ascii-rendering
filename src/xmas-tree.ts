@@ -4,7 +4,7 @@ import { multiplyMatrixVector } from "./utils/multiply-matrix-vector";
 import { Vec3 } from "./utils/vec3";
 import Rand from "rand-seed";
 import { randomLightColorHex } from "./utils/random-light-color-hex";
-import { Object3d } from "./object3d";
+import { Entity } from "./entity";
 
 class Obj {
   constructor(public v: Vec3[] = []) {}
@@ -124,28 +124,20 @@ class Text extends Obj {
   }
 }
 
-export class XmasTree extends Object3d {
-  private time = 0;
+export class XmasTree extends Entity {
   private layers = 7;
   private curves = 10;
   private curveLines = 4;
 
   constructor() {
     super();
-    this.x = 150;
-    this.y = 150;
   }
 
-  update(deltaTime: number) {
-    super.update(deltaTime);
-    this.time += deltaTime;
-  }
-
-  render(renderer: Renderer) {
+  render() {
     const near = 0.1;
     const far = 1000;
     const fov = 90;
-    const aspectRatio = renderer.height / renderer.width;
+    const aspectRatio = this.renderer.height / this.renderer.width;
     const fovRad = 1 / Math.tan(fov * 0.5 / 180 * Math.PI);
 
     const matProj = new Mat4x4();
@@ -156,7 +148,7 @@ export class XmasTree extends Object3d {
     matProj.m[2][3] = 1;
     matProj.m[3][3] = 0;
 
-    const theta = this.time * 0.002;
+    const theta = this.scene.time * 0.002;
 
     const matRotZ =new Mat4x4();
     const matRotY =new Mat4x4();
@@ -199,7 +191,7 @@ export class XmasTree extends Object3d {
       const lights = Math.max(this.layers * 3 - i * 3, 0);
       for (let j = 0; j < lights; j++) {
         const v = new Vec3(Math.cos(i + j / lights * Math.PI * 2) * layerSize, - i * 0.4, Math.sin(i + j / lights * Math.PI * 2) * layerSize);
-        const rnd = new Rand((Math.floor(this.time / 500 + j)).toString());
+        const rnd = new Rand((Math.floor(this.scene.time / 500 + j)).toString());
         const color = randomLightColorHex(rnd.next())
         objs.push(new Light(v, color));
       }
@@ -230,7 +222,7 @@ export class XmasTree extends Object3d {
 
     objs.sort((a, b) => a.v[0].z - b.v[0].z);
     for (const obj of objs) {
-      obj.render(matProj, renderer);
+      obj.render(matProj, this.renderer);
     }
   }
 }

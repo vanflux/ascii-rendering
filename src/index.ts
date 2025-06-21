@@ -1,6 +1,7 @@
 import { Bomb } from "./bomb";
-import { Object3d } from "./object3d";
+import { Entity } from "./entity";
 import { Renderer } from "./renderer";
+import { Scene } from "./scene";
 import { XmasTree } from "./xmas-tree";
 
 export function main() {
@@ -13,27 +14,27 @@ export function main() {
   });
   const ctx = canvas.getContext('2d')!;
   const renderer = new Renderer(canvas, ctx);
-  const objs: Object3d[] = [];
+  const scene = new Scene(renderer);
 
   let time = Date.now();
   function tick() {
     const deltaTime = Date.now() - time;
     time += deltaTime;
     renderer.clear();
-    for (const obj of objs) obj.update(deltaTime);
-    for (const obj of objs) obj.render(renderer);
+    scene.update(deltaTime);
+    scene.render();
     window.requestAnimationFrame(tick);
   }
   window.requestAnimationFrame(tick);
 
   const handleSelect = () => {
-    objs.length = 0;
+    scene.clear();
     switch (selectElem.value) {
       case 'xmas-tree':
-        objs.push(new XmasTree());
+        scene.add(new XmasTree());
         break;
       case 'bomb':
-        objs.push(new Bomb());
+        scene.add(new Bomb());
         break;
     }
   };

@@ -3,30 +3,22 @@ import { Renderer } from "./renderer";
 import { multiplyMatrixVector } from "./utils/multiply-matrix-vector";
 import { TextUtils } from "./utils/text-utils";
 import { Vec3 } from "./utils/vec3";
-import { Object3d } from "./object3d";
+import { Entity } from "./entity";
 
-export class Bomb extends Object3d {
-  private time = 0;
+export class Bomb extends Entity {
   private bombHorizontalLines = 16;
   private chars1 = new Array(this.bombHorizontalLines).fill(0).map(() => TextUtils.randomAlphaNumber());
   private chars2 = new Array(this.bombHorizontalLines).fill(0).map(() => TextUtils.randomAlphaNumber());
 
   constructor() {
     super();
-    this.x = 150;
-    this.y = 150;
   }
 
-  update(deltaTime: number) {
-    super.update(deltaTime);
-    this.time += deltaTime;
-  }
-
-  render(renderer: Renderer) {
+  render() {
     const near = 0.1;
     const far = 1000;
     const fov = 90;
-    const aspectRatio = renderer.height / renderer.width;
+    const aspectRatio = this.renderer.height / this.renderer.width;
     const fovRad = 1 / Math.tan(fov * 0.5 / 180 * Math.PI);
 
     const matProj = new Mat4x4();
@@ -37,7 +29,7 @@ export class Bomb extends Object3d {
     matProj.m[2][3] = 1;
     matProj.m[3][3] = 0;
 
-    const theta = this.time * 0.002;
+    const theta = this.scene.time * 0.002;
 
     const matRotZ =new Mat4x4();
     const matRotY =new Mat4x4();
@@ -110,7 +102,7 @@ export class Bomb extends Object3d {
       lines.push([new Vec3(i / 30 * 5, Math.cos(v1 * 2) * 2, Math.sin(v1 * 2) * 2), new Vec3((i + 1) / 30 * 5, Math.cos(v2 * 2) * 2, Math.sin(v2 * 2) * 2), '/', '#ffffff', 'spaced']);
     }
 
-    renderer.fontSize = 24;
+    this.renderer.fontSize = 24;
     const position = new Vec3(0, 0, 4);
     for (const line of lines) {
       let v1 = line[0];
@@ -135,17 +127,17 @@ export class Bomb extends Object3d {
       v1.y += 1;
       v2.x += 1;
       v2.y += 1;
-      v1.x *= 0.5 * renderer.width;
-      v1.y *= 0.5 * renderer.height;
-      v2.x *= 0.5 * renderer.width;
-      v2.y *= 0.5 * renderer.height;
+      v1.x *= 0.5 * this.renderer.width;
+      v1.y *= 0.5 * this.renderer.height;
+      v2.x *= 0.5 * this.renderer.width;
+      v2.y *= 0.5 * this.renderer.height;
       
-      renderer.fillColor = line[3];
-      renderer.strokeColor = line[3];
+      this.renderer.fillColor = line[3];
+      this.renderer.strokeColor = line[3];
       if (line[4] === 'spaced') {
-        renderer.lineSpacedText(v1.x, v1.y, v2.x, v2.y, line[2], 24);
+        this.renderer.lineSpacedText(v1.x, v1.y, v2.x, v2.y, line[2], 24);
       } else {
-        renderer.lineStretchText(v1.x, v1.y, v2.x, v2.y, line[2]);
+        this.renderer.lineStretchText(v1.x, v1.y, v2.x, v2.y, line[2]);
       }
       // renderer.line(v1.x, v1.y, v2.x, v2.y);
     }
