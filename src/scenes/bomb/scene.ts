@@ -1,9 +1,9 @@
-import { Entity } from "../../entity";
+import { Scene } from "../../scene";
 import { Bomb } from "./bomb";
 
-export class BombScene extends Entity {
+export class BombScene extends Scene {
   init() {
-    this.position.z = 4;
+    this.root.position.z = 4;
     this.add(new Bomb());
   }
 }
