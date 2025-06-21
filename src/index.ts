@@ -6,12 +6,8 @@ import { XmasTree } from "./xmas-tree";
 
 export function main() {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-  canvas.width = canvas.getBoundingClientRect().width;
-  canvas.height = canvas.getBoundingClientRect().height;
-  window.addEventListener('resize', () => {
-    canvas.width = canvas.getBoundingClientRect().width;
-    canvas.height = canvas.getBoundingClientRect().height;
-  });
+  canvas.width = 1280;
+  canvas.height = 720;
   const ctx = canvas.getContext('2d')!;
   const renderer = new Renderer(canvas, ctx);
   const scene = new Scene(renderer);
