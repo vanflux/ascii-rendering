@@ -1,6 +1,4 @@
 import { Mat4x4 } from "../../utils/mat4x4";
-import { Renderer } from "../../renderer";
-import { multiplyMatrixVector } from "../../utils/multiply-matrix-vector";
 import { TextUtils } from "../../utils/text-utils";
 import { Vec3 } from "../../utils/vec3";
 import { Entity } from "../../entity";

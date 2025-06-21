@@ -1,4 +1,3 @@
-import Rand from "rand-seed";
 
 export function randomLightColorHex(v: number): string {
   let h = v, i = Math.floor(h * 6);
