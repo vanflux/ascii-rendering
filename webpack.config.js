@@ -1,12 +1,10 @@
 const { resolve } = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const { DefinePlugin, ProgressPlugin } = require("webpack");
+const { ProgressPlugin } = require("webpack");
 
 const isProduction = process.env.NODE_ENV === 'production';
-const isDevelopment = !isProduction;
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',
@@ -18,19 +16,7 @@ module.exports = {
         exclude: /node_modules/,
         use: 'ts-loader'
       },
-      {
-        test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-        ],
-      },
     ],
-  },
-  output: {
-    filename: '[name].[contenthash].js',
-    path: resolve(__dirname, 'dist'),
-    publicPath: '/'
   },
   devServer: {
     historyApiFallback: true,
@@ -53,26 +39,14 @@ module.exports = {
   },
   plugins: [
     new ProgressPlugin(),
-    new DefinePlugin({
-      ENV: JSON.stringify(process.env.ENV ?? 'dev'),
-      BUILD_TIME: JSON.stringify(new Date().toISOString())
-    }),
-    new MiniCssExtractPlugin(isProduction ? {
-      filename: "[name].[contenthash:8].css",
-      chunkFilename: "[name].[contenthash:8].chunk.css",
-    } : {}),
     new ForkTsCheckerWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: resolve(__dirname, './public/index.html')
     }),
     new CopyPlugin({
       patterns: [
-        {
-          from: 'public',
-          to: '.',
-          globOptions: { ignore: ['**/index.html'] }
-        },
+        { from: 'public', to: '.', globOptions: { ignore: ['**/index.html'] } },
       ],
     }),
-  ].filter(Boolean)
+  ]
 }
