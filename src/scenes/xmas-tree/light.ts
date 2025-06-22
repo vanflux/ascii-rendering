@@ -2,7 +2,9 @@ import { Entity } from "../../entity";
 import { Vec3 } from "../../utils/vec3";
 
 export class Light extends Entity {
-  constructor(position: Vec3, private color: string) {
+  public color = '#ffffff';
+
+  constructor(position: Vec3) {
     super();
     this.position = position;
   }

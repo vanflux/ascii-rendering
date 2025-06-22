@@ -60,7 +60,6 @@ export class Bomb extends Entity {
       line[1] = line[1].add(-2, 0, 0);
     }
 
-    lines.sort((a, b) => a[0].z - b[0].z);
     for (const line of lines) {
       let w1 = this.scene.modelMatrix.mulVec(line[0]);
       let w2 = this.scene.modelMatrix.mulVec(line[1]);

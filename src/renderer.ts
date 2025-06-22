@@ -9,7 +9,7 @@ interface Command {
 }
 
 export class Renderer {
-  private occupied = new Array(Math.floor(this.height)).fill(0).map(() => new Array(Math.floor(this.width)).fill(0));
+  private occupied = new Float32Array(this.width * this.height);
   public fontSize = 16;
   public fillColor = '#ffffff';
   public strokeColor = '#ffffff';
@@ -19,7 +19,9 @@ export class Renderer {
   constructor(
     private readonly canvas: HTMLCanvasElement,
     private readonly ctx: CanvasRenderingContext2D,
-  ) {}
+  ) {
+    this.clear();
+  }
 
   get width() {
     return this.canvas.width;
@@ -31,10 +33,8 @@ export class Renderer {
 
   clear() {
     this.ctx.clearRect(0, 0, this.width, this.height);
-    for (let y = 0; y < this.occupied.length; y++) {
-      for (let x = 0; x < this.occupied[y].length; x++) {
-        this.occupied[y][x] = 0;
-      }
+    for (let i = 0; i < this.occupied.length; i++) {
+      this.occupied[i] = 0;
     }
   }
 
@@ -83,8 +83,8 @@ export class Renderer {
     const vx2 = x1 < x2 ? x2 : x1;
     const vy1 = x1 < x2 ? y1 : y2;
     const vy2 = x1 < x2 ? y2 : y1;
-    for (let i = 0; i <= chars.length; i++) {
-      const progress = i / chars.length;
+    for (let i = 0; i < chars.length; i++) {
+      const progress = i / (chars.length == 1 ? 1 : chars.length - 1);
       const x = vx1 + (vx2 - vx1) * progress;
       const y = vy1 + (vy2 - vy1) * progress;
       this.char(x, y, chars[index], z);
@@ -105,25 +105,25 @@ export class Renderer {
     this.commandQueue.sort((a, b) => a.z - b.z);
     for (const command of this.commandQueue) {
       this.charShader?.(command);
-      const occupiedX = Math.floor(command.x / this.width * this.occupied[0].length);
-      const occupiedY = Math.floor(command.y / this.height * this.occupied.length);
-      const v = this.occupied[occupiedY]?.[occupiedX] ?? 0;
+      const index = Math.floor(command.y) * this.width + Math.floor(command.x);
+      if (index < 0 || index >= this.occupied.length) continue;
+      const v = this.occupied[index];
       const intensity = Math.max(0, 1 - v * 0.7);
-      const color = `${command.color}${(Math.floor(intensity * 255)).toString(16).padStart(2, '0')}`;
+      if (intensity > 0) {
+        this.ctx.fillStyle = `${command.color}${(Math.floor(intensity * 255)).toString(16).padStart(2, '0')}`;
+        this.ctx.font = `${command.fontSize}px Arial`;
+        this.ctx.fillText(command.char, command.x, command.y);
 
-      this.ctx.fillStyle = color;
-      this.ctx.font = `${command.fontSize}px Arial`;
-      this.ctx.fillText(command.char, command.x, command.y);
-
-      const c = 0.8;
-      const size = Math.ceil(command.fontSize * c);
-      for (let dy = - size; dy < size; dy++) {
-        for (let dx = - size; dx < size; dx++) {
-          const rx = occupiedX + dx;
-          const ry = occupiedY + dy;
-          if (ry < 0 || ry >= this.occupied.length) continue;
-          if (rx < 0 || rx >= this.occupied[ry].length) continue;
-          this.occupied[ry][rx] += intensity * 0.5;
+        const sizeFactorX = 0.8;
+        const sizeFactorY = 0.8;
+        const sizeX = Math.ceil(command.fontSize * sizeFactorX);
+        const sizeY = Math.ceil(command.fontSize * sizeFactorY);
+        for (let dy = - sizeY; dy < sizeY; dy++) {
+          for (let dx = - sizeX; dx < sizeX; dx++) {
+            const index = (Math.floor(command.y) + dy) * this.width + Math.floor(command.x) + dx;
+            if (index < 0 || index >= this.occupied.length) continue;
+            this.occupied[index] += intensity * 0.5;
+          }
         }
       }
     }

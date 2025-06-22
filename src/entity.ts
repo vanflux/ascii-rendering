@@ -23,6 +23,7 @@ export abstract class Entity {
     const oldModelMatrix = this.scene.modelMatrix;
     this.scene.modelMatrix =
       Mat4x4.createRotationVec(this.rotation)
+      .mulMat(Mat4x4.createScaleVec(this.scale))
       .mulMat(Mat4x4.createTranslationVec(this.position))
       .mulMat(this.scene.modelMatrix);
     this.render();

@@ -1,27 +1,30 @@
 import { Vec3 } from "../../utils/vec3";
-import { randomLightColorHex } from "../../utils/random-light-color-hex";
 import { Entity } from "../../entity";
-import Rand from "rand-seed";
 import { Ball } from "./ball";
 import { Light } from "./light";
-import { isLineBreak } from "typescript";
 import { Line } from "./line";
 import { Star } from "./star";
+import { PrizeBox } from "./prize-box-";
 
 export class XmasTree extends Entity {
   private layers = 7;
+  private layerStart = 1.5;
+  private layerEnd = 0.2;
   private curves = 10;
   private curveLines = 4;
+  private stemLines = 10;
+  private lastLightChange = 0;
+  private lightAux = 0;
+  private lightColors = ['#ff00ff', '#ff0000', '#8888ff', '#ffff00', '#00ffff'];
 
   constructor() {
     super();
   }
 
   init() {
-    const stemLines = 10;
-    for (let i = 0; i < stemLines; i++) {
-      const x = Math.cos(i / stemLines * Math.PI * 2);
-      const z = Math.sin(i / stemLines * Math.PI * 2);
+    for (let i = 0; i < this.stemLines; i++) {
+      const x = Math.cos(i / this.stemLines * Math.PI * 2);
+      const z = Math.sin(i / this.stemLines * Math.PI * 2);
       const x1 = x * 0.3;
       const z1 = z * 0.3;
       const x2 = -x * 0.1;
@@ -29,17 +32,13 @@ export class XmasTree extends Entity {
       this.add(new Line(new Vec3(x1, 1.21, z1), new Vec3(x2, -2.3, z2), '|', '#5c4033', 'spaced'));
     }
 
-    const layerStart = 1.5;
-    const layerEnd = 0.2;
     for (let i = 0; i < this.layers; i++) {
-      const layerSize = layerStart + (layerEnd - layerStart) * i / this.layers;
-      const balls = Math.max(this.layers - i, 0);
+      const layerSize = this.layerStart + (this.layerEnd - this.layerStart) * i / this.layers;
+      const balls = Math.max(this.layers - i, 3);
       const lights = Math.max(this.layers * 3 - i * 3, 0);
       for (let j = 0; j < lights; j++) {
         const v = new Vec3(Math.cos(i + j / lights * Math.PI * 2) * layerSize, - i * 0.4, Math.sin(i + j / lights * Math.PI * 2) * layerSize);
-        const rnd = new Rand((Math.floor(this.scene.time * 2 + j)).toString());
-        const color = randomLightColorHex(rnd.next())
-        this.add(new Light(v, color));
+        this.add(new Light(v));
       }
       for (let j = 0; j < balls; j++) {
         const v = new Vec3(Math.cos(i + j / balls * Math.PI * 2) * (layerSize + 0.1), - i * 0.4, Math.sin(i + j / balls * Math.PI * 2) * (layerSize + 0.1));
@@ -68,5 +67,15 @@ export class XmasTree extends Entity {
 
   update() {
     this.rotation.y = this.scene.time * 0.5;
+    if (Date.now() - this.lastLightChange > 400) {
+      this.lastLightChange = Date.now();
+      this.lightAux++;
+      let i = 0;
+      for (const child of this.childs) {
+        if (child instanceof Light) {
+          child.color = this.lightColors[Math.floor(this.lightAux + i++) % this.lightColors.length];
+        }
+      }
+    }
   }
 }

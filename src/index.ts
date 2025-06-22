@@ -1,4 +1,5 @@
 import { Renderer } from "./renderer";
+import { Scene } from "./scene";
 import { BombScene } from "./scenes/bomb/scene";
 import { XmasTreeScene } from "./scenes/xmas-tree/scene";
 
@@ -8,7 +9,7 @@ export function main() {
   canvas.height = 720;
   const ctx = canvas.getContext('2d')!;
   const renderer = new Renderer(canvas, ctx);
-  let scene = new XmasTreeScene(renderer);
+  let scene: Scene = new XmasTreeScene(renderer);
 
   let time = Date.now() / 1000;
   function tick() {

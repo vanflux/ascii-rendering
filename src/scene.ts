@@ -3,7 +3,7 @@ import { Renderer } from "./renderer";
 import { Root } from "./root";
 import { Mat4x4 } from "./utils/mat4x4";
 
-export class Scene {
+export abstract class Scene {
   public time = 0;
   public deltaTime = 0;
   protected root = new Root(this);

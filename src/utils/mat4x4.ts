@@ -80,6 +80,15 @@ export class Mat4x4 {
     return mat;
   }
   
+  static createScaleVec(v: Vec3) {
+    const mat = new Mat4x4();
+    mat.m[0][0] = v.x;
+    mat.m[1][1] = v.y;
+    mat.m[2][2] = v.z;
+    mat.m[3][3] = 1;
+    return mat;
+  }
+  
   static createRotationVec(v: Vec3) {
     return this.createRotationX(v.x).mulMat(this.createRotationY(v.y)).mulMat(this.createRotationZ(v.z));
   }
