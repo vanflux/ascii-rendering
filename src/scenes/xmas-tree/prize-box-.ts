@@ -36,7 +36,9 @@ export class PrizeBox extends Entity {
       let s2 = this.scene.projectionMatrix.mulVec(w2);
       s2 = s2.divScalar(s2.w).add(1, 1, 0).mul(0.5 * this.renderer.width, 0.5 * this.renderer.height, 1);
       this.renderer.fontSize = 14;
-      this.renderer.fillColor = '#cccc33';
+      this.renderer.fillColorR = 204;
+      this.renderer.fillColorG = 204;
+      this.renderer.fillColorB = 51;
       this.renderer.lineSpacedText(s1.x, s1.y, s2.x, s2.y, '#', 16, w2.z);
       minX = Math.min(minX ?? s1.x, s1.x, s2.x);
       minY = Math.min(minY ?? s1.y, s1.y, s2.y);
@@ -66,10 +68,14 @@ export class PrizeBox extends Entity {
       let s2 = this.scene.projectionMatrix.mulVec(w2);
       s2 = s2.divScalar(s2.w).add(1, 1, 0).mul(0.5 * this.renderer.width, 0.5 * this.renderer.height, 1);
       this.renderer.fontSize = 14;
-      this.renderer.fillColor = '#ff0000';
+      this.renderer.fillColorR = 255;
+      this.renderer.fillColorG = 0;
+      this.renderer.fillColorB = 0;
       this.renderer.lineSpacedText(s1.x, s1.y, s2.x, s2.y, 'o', 10, w1.z);
     }
-    this.renderer.fillColor = '#ffffff';
+    this.renderer.fillColorR = 255;
+    this.renderer.fillColorG = 255;
+    this.renderer.fillColorB = 255;
     this.renderer.lineStretchText(
       minX! + 15, minY! + (maxY! - minY!) / 2 + 5,
       maxX! - 15, minY! + (maxY! - minY!) / 2 + 5,

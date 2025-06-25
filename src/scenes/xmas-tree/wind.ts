@@ -75,7 +75,9 @@ export class Wind extends Entity {
     let s1 = this.scene.projectionMatrix.mulVec(w1);
     s1 = s1.divScalar(s1.w).add(1, 1, 0).mul(0.5 * this.renderer.width, 0.5 * this.renderer.height, 1);
 
-    this.renderer.fillColor = '#ffffff';
+    this.renderer.fillColorR = 255;
+    this.renderer.fillColorG = 255;
+    this.renderer.fillColorB = 255;
     this.renderer.fontSize = 10;
 
     const index = Math.ceil((1 - this.vx / this.startVx) * this.frames.length);

@@ -6,7 +6,9 @@ export class Line extends Entity {
     position: Vec3,
     private destination: Vec3,
     public text: string,
-    public color: string,
+    public colorR: number,
+    public colorG: number,
+    public colorB: number,
     public mode: 'stretch' | 'spaced',
   ) {
     super();
@@ -22,8 +24,9 @@ export class Line extends Entity {
     s1 = s1.divScalar(s1.w).add(1, 1, 0).mul(0.5 * this.renderer.width, 0.5 * this.renderer.height, 1);
     s2 = s2.divScalar(s2.w).add(1, 1, 0).mul(0.5 * this.renderer.width, 0.5 * this.renderer.height, 1);
     
-    this.renderer.fillColor = this.color;
-    this.renderer.strokeColor = this.color;
+    this.renderer.fillColorR = this.colorR;
+    this.renderer.fillColorG = this.colorG;
+    this.renderer.fillColorB = this.colorB;
     if (this.mode === 'spaced') {
       this.renderer.lineSpacedText(s1.x, s1.y, s2.x, s2.y, this.text, 32, w1.z);
     } else {

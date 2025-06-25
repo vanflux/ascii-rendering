@@ -68,13 +68,18 @@
       overflow: hidden;
     }
 
-    .demo > div {
+    .demo > .options {
       position: absolute;
       left: 8px;
       top: 8px;
     }
 
-    .demo > canvas {
+    .demo > .canvas-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    canvas {
       width: 100%;
       height: 100%;
     }
@@ -117,13 +122,17 @@
   <main>
     <div class="content">
       <div class="demo">
-        <div>
-          <select id="select">
+        <div class="options">
+          <select id="scene-select">
             <option value="xmas-tree">Xmas tree</option>
             <option value="bomb">Bomb</option>
           </select>
+          <select id="renderer-select">
+            <option value="2d">2d renderer</option>
+            <option value="webgl">Webgl renderer</option>
+          </select>
         </div>
-        <canvas id="canvas"></canvas>
+        <div class="canvas-container" id="canvas-container"></div>
       </div>
       <div class="buttons">
         <a href="https://github.com/vanflux/ascii-rendering" target="_blank">View Repository</a>

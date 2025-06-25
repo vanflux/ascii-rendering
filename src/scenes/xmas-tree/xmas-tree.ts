@@ -15,7 +15,13 @@ export class XmasTree extends Entity {
   private stemLines = 10;
   private lastLightChange = 0;
   private lightAux = 0;
-  private lightColors = ['#ff00ff', '#ff0000', '#8888ff', '#ffff00', '#00ffff'];
+  private lightColors = [
+    [255, 0, 255],
+    [255, 0, 0],
+    [58, 58, 255],
+    [255, 255, 0],
+    [0, 255, 255],
+  ];
 
   constructor() {
     super();
@@ -29,7 +35,7 @@ export class XmasTree extends Entity {
       const z1 = z * 0.3;
       const x2 = -x * 0.1;
       const z2 = -z * 0.1;
-      this.add(new Line(new Vec3(x1, 1.21, z1), new Vec3(x2, -2.3, z2), '|', '#5c4033', 'spaced'));
+      this.add(new Line(new Vec3(x1, 1.21, z1), new Vec3(x2, -2.3, z2), '|', 92, 64, 51, 'spaced'));
     }
 
     for (let i = 0; i < this.layers; i++) {
@@ -58,7 +64,7 @@ export class XmasTree extends Entity {
             curveStart.y + Math.sin((k + 1) / this.curveLines * Math.PI) * 0.15 * layerSize,
             curveStart.z + (curveEnd.z - curveStart.z) * (k + 1) / this.curveLines,
           );
-          this.add(new Line(curvePoint1, curvePoint2.subVec(curvePoint1), '*', '#00cc00', 'spaced'));
+          this.add(new Line(curvePoint1, curvePoint2.subVec(curvePoint1), '*', 0, 204, 0, 'spaced'));
         }
       }
     }
@@ -73,7 +79,10 @@ export class XmasTree extends Entity {
       let i = 0;
       for (const child of this.childs) {
         if (child instanceof Light) {
-          child.color = this.lightColors[Math.floor(this.lightAux + i++) % this.lightColors.length];
+          const [r, g, b] = this.lightColors[Math.floor(this.lightAux + i++) % this.lightColors.length];
+          child.colorR = r;
+          child.colorG = g;
+          child.colorB = b;
         }
       }
     }
