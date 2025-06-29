@@ -11,7 +11,7 @@ A fun project that renders animated 3D-inspired ASCII art scenes directly in the
 
 * **Xmas Tree** 🎄 - Festive ASCII tree with ornaments
 * **Bomb** 💣 - Rotating ASCII bomb
-* **Boids** 💣 - Boids ASCII
+* **Boids** 🐦 - Boids ASCII
 
 Use the dropdown menu in the app to switch scenes.
 
