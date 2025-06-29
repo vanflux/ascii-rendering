@@ -2,6 +2,7 @@ import { Renderer } from "./renderer";
 import { Renderer2d } from "./renderer-2d";
 import { RendererWebgl } from "./renderer-webgl";
 import { Scene } from "./scene";
+import { BoidsScene } from "./scenes/boids/scene";
 import { BombScene } from "./scenes/bomb/scene";
 import { XmasTreeScene } from "./scenes/xmas-tree/scene";
 
@@ -42,6 +43,9 @@ export function main() {
           break;
         case 'bomb':
           scene = new BombScene(renderer);
+          break;
+        case 'boids':
+          scene = new BoidsScene(renderer);
           break;
       }
     }

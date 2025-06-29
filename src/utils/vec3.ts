@@ -30,4 +30,22 @@ export class Vec3 {
   mul(x: number, y: number, z: number) {
     return new Vec3(this.x * x, this.y * y, this.z * z);
   }
+
+  mulScalar(n: number) {
+    return new Vec3(this.x * n, this.y * n, this.z * n);
+  }
+
+  magnitude() {
+    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+  }
+
+  normalize() {
+    const mag = this.magnitude();
+    if (mag === 0) return new Vec3();
+    return this.divScalar(mag);
+  }
+
+  negate() {
+    return this.mulScalar(-1);
+  }
 }
